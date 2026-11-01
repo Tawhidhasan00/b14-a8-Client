@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, CalendarHeart, HeartHandshake, MapPin, Sparkles, Sprout, Users } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,7 +22,7 @@ export default function Home() {
   return (
     <div className="home-page">
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <Header />
+      
       <main id="main-content">
         <section className="hero-section" aria-labelledby="hero-title">
           <div className="site-container hero-grid">
@@ -83,7 +81,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <Footer />
+      
     </div>
   );
 }
