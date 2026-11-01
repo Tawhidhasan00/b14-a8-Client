@@ -1,5 +1,6 @@
 import { ArrowLeft, CalendarDays, Clock3, MapPin, UserRound } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export type EventDetailsData = {
   title: string;
@@ -11,7 +12,8 @@ export type EventDetailsData = {
   meetingPoint: string;
   whatToBring: string;
   creatorName: string;
-  image: string;
+  thumbnail?: string;
+  image?: string;
 };
 
 export function EventDetails({ event }: { event: EventDetailsData }) {
@@ -23,73 +25,76 @@ export function EventDetails({ event }: { event: EventDetailsData }) {
   ];
 
   return (
-    <section className="mx-auto grid w-full max-w-[1080px] items-start gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[1.65fr_0.9fr] lg:gap-10 lg:py-16">
-      <article className="min-w-0">
-        <div className="mb-6 flex items-center gap-2 text-sm text-[#526257]">
+    <section className="container mx-auto min-h-[65vh] w-[min(1200px,calc(100%-64px))] pb-[85px] pt-[55px] text-[#17251d] max-[600px]:w-[calc(100%-36px)] max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
+        <Link href="/events" className="mb-[27px] inline-flex items-center gap-[7px] text-xs leading-[1.6] text-[#59675e]">
           <ArrowLeft size={15} aria-hidden="true" />
-          <span>Back to events</span>
-        </div>
-        <div className="relative aspect-[16/9] overflow-hidden rounded-[16px] bg-[#e9eee2]">
+          Back to events
+        </Link>
+      <div className="grid grid-cols-[1.7fr_1fr] items-start gap-9 max-[860px]:grid-cols-[1.4fr_1fr] max-[860px]:gap-6 max-[600px]:grid-cols-1">
+      <article className="min-w-0">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[15px] bg-[#e8eddf]">
           <Image
-            src={event.image}
-            alt=""
+            src={event.thumbnail || event.image || "/images/community-volunteer.jpg"}
+            alt={event.title}
             width={1600}
-            height={900}
+            height={1000}
             unoptimized
             className="h-full w-full object-cover"
           />
         </div>
-        <span className="mt-6 inline-flex rounded-full bg-[#e9eee2] px-3 py-1.5 text-xs font-semibold text-[#176b38]">
+        <span className="mt-[25px] inline-block rounded-[5px] bg-[#e8eddf] px-[10px] py-1 text-[11px] font-semibold text-[#166534]">
           {event.eventType}
         </span>
-        <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#19271e] sm:text-4xl">
+        <h1 className="my-[18px] text-[clamp(28px,3vw,40px)] font-semibold leading-[1.25] tracking-[-1px]">
           {event.title}
         </h1>
-        <h2 className="mt-9 text-xl font-semibold tracking-[-0.02em] text-[#19271e]">
+        <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
           A little about this initiative
         </h2>
-        <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#58665d]">
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">
           {event.description}
         </p>
-        <h2 className="mt-8 text-xl font-semibold tracking-[-0.02em] text-[#19271e]">
-          Where we'll meet
+        <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
+          Where we&apos;ll meet
         </h2>
-        <p className="mt-3 text-sm leading-7 text-[#58665d]">{event.meetingPoint}</p>
-        <h2 className="mt-8 text-xl font-semibold tracking-[-0.02em] text-[#19271e]">
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">{event.meetingPoint}</p>
+        <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
           What to bring
         </h2>
-        <p className="mt-3 text-sm leading-7 text-[#58665d]">{event.whatToBring}</p>
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">{event.whatToBring}</p>
       </article>
 
-      <aside className="rounded-[16px] border border-[#dce3d8] bg-white p-6 shadow-[0_12px_40px_rgba(25,39,30,0.04)] sm:p-7 lg:sticky lg:top-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#176b38]">
+      <aside className="sticky top-[113px] rounded-[14px] border border-[#dce4da] bg-card p-7 max-[860px]:p-[22px] max-[600px]:static">
+        <h2 className="mb-[21px] text-[19px] font-semibold">
           Make a little time.
-        </p>
-        <div className="mt-6 divide-y divide-[#e8ece5]">
+        </h2>
+        <div>
           {details.map(({ icon: Icon, label, value }) => (
-            <div key={label} className="flex gap-3 py-4 first:pt-0">
-              <Icon size={18} className="mt-0.5 shrink-0 text-[#176b38]" aria-hidden="true" />
+            <div key={label} className="mb-[19px] flex items-start gap-[11px]">
+              <Icon size={19} className="mt-1 shrink-0 text-[#166534]" aria-hidden="true" />
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold tracking-[0.12em] text-[#89948b]">
+                <small className="block text-[10px] text-[#59675e]">
                   {label}
-                </p>
-                <p className="mt-1 break-words text-sm font-medium text-[#26352b]">
+                </small>
+                <strong className="break-words text-[13px] font-medium">
                   {value}
-                </p>
+                </strong>
               </div>
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          className="mt-5 min-h-12 w-full rounded-[9px] bg-[#176b38] px-5 py-3 text-sm font-semibold text-white"
+        <Link
+          href={'/joined-events'}
+          className="mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-[9px] border border-transparent bg-[#166534] px-[23px] py-3 text-sm font-semibold leading-[1.6] text-white transition-[opacity,transform] duration-200 hover:-translate-y-px hover:opacity-90"
         >
-          Join Event
-        </button>
-        <p className="mt-4 text-center text-xs leading-5 text-[#637168]">
+            Join Event
+        </Link>
+
+        <p className="mt-3 text-center text-[10px] text-[#59675e]">
           A little of your time. A whole lot of good.
         </p>
       </aside>
+      </div>
     </section>
   );
 }

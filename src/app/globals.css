@@ -141,6 +141,22 @@
 
 .site-container { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
 
+@media (min-width: 40rem) {
+  .site-container { max-width: 40rem; }
+}
+@media (min-width: 48rem) {
+  .site-container { max-width: 48rem; }
+}
+@media (min-width: 64rem) {
+  .site-container { max-width: 64rem; }
+}
+@media (min-width: 80rem) {
+  .site-container { max-width: 80rem; }
+}
+@media (min-width: 96rem) {
+  .site-container { max-width: 96rem; }
+}
+
 .mobile-navigation summary:focus-visible { outline: 2px solid var(--home-green); outline-offset: 5px; border-radius: 5px; }
 
 .site-header { border-bottom: 1px solid var(--border); }

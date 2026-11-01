@@ -3,55 +3,57 @@ import Image from "next/image";
 import Link from "next/link";
 
 export type EventCardData = {
+  _id: string;
   title: string;
   eventType: string;
   location: string;
   date: string;
   duration: number;
   description: string;
-  image: string;
+  thumbnail?: string;
+  image?: string;
 };
 
 export function EventCard({ event }: { event: EventCardData }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[14px] border border-[#dce3d8] bg-white transition-shadow hover:shadow-[0_12px_32px_rgba(25,39,30,0.10)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#e9eee2]">
+    <article className="group flex flex-col overflow-hidden rounded-[13px] border border-[#dce4da] bg-card text-[#17251d] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_22px_#17251d0d]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#e8eddf]">
         <Image
-          src={event.image}
-          alt=""
+          src={event.thumbnail || event.image || "/images/community-volunteer.jpg"}
+          alt={event.title}
           width={900}
           height={675}
           unoptimized
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
-        <span className="absolute left-4 top-4 rounded-full bg-[#faf8f3] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-[#176b38] shadow-sm">
+        <span className="absolute left-[15px] top-[15px] rounded-[5px] bg-[#fffffff0] px-[11px] py-[5px] text-[10px] font-semibold text-[#25462d]">
           {event.eventType}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="mb-3 flex items-center gap-2 text-xs text-[#526257]">
-          <CalendarDays size={15} className="text-[#176b38]" aria-hidden="true" />
+      <div className="flex flex-1 flex-col p-[21px]">
+        <p className="mb-[10px] flex items-center gap-[7px] text-[10px] font-semibold text-[#166534]">
+          <CalendarDays size={14} aria-hidden="true" />
           {event.date}
         </p>
-        <h2 className="text-lg font-semibold leading-snug tracking-[-0.03em] text-[#19271e]">
+        <h2 className="text-[17px] font-semibold leading-[1.4] tracking-[-0.4px]">
           {event.title}
         </h2>
-        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#58665d]">
+        <p className="mt-[10px] line-clamp-2 text-xs leading-[1.8] text-[#59675e]">
           {event.description}
         </p>
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[#e8ece5] pt-4 text-xs text-[#637168]">
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin size={14} className="text-[#176b38]" aria-hidden="true" />
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 py-[17px] text-[10px] text-[#59675e]">
+          <span className="inline-flex items-center gap-[5px]">
+            <MapPin size={14} aria-hidden="true" />
             {event.location}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock3 size={14} className="text-[#176b38]" aria-hidden="true" />
+          <span className="inline-flex items-center gap-[5px]">
+            <Clock3 size={14} aria-hidden="true" />
             {event.duration} min
           </span>
         </div>
-        <Link href={'/'} className="mt-4 flex items-center justify-between border-t border-[#e8ece5] pt-4 text-sm font-semibold text-[#176b38]">
-          View Event <ArrowUpRight size={17} aria-hidden="true" />
+        <Link href={`/events/${event._id}`} className="flex items-center justify-between border-t border-[#dce4da] pt-[15px] text-xs font-semibold leading-[1.6] text-[#166534]">
+          View Event <ArrowUpRight size={18} aria-hidden="true" />
         </Link>
       </div>
     </article>
