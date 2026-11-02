@@ -1,20 +1,12 @@
+import { EventCardData } from "@/lib/type";
 import { ArrowUpRight, CalendarDays, Clock3, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export type EventCardData = {
-  _id: string;
-  title: string;
-  eventType: string;
-  location: string;
-  date: string;
-  duration: number;
-  description: string;
-  thumbnail?: string;
-  image?: string;
-};
 
-export function EventCard({ event }: { event: EventCardData }) {
+
+export function EventCard({ event, preview = false }: { event: EventCardData; preview?: boolean }) {
+  
   return (
     <article className="group flex flex-col overflow-hidden rounded-[13px] border border-[#dce4da] bg-card text-[#17251d] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_22px_#17251d0d]">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#e8eddf]">
@@ -52,9 +44,15 @@ export function EventCard({ event }: { event: EventCardData }) {
             {event.duration} min
           </span>
         </div>
-        <Link href={`/events/${event._id}`} className="flex items-center justify-between border-t border-[#dce4da] pt-[15px] text-xs font-semibold leading-[1.6] text-[#166534]">
-          View Event <ArrowUpRight size={18} aria-hidden="true" />
-        </Link>
+        {preview ? (
+          <span aria-disabled="true" className="flex items-center justify-between border-t border-[#dce4da] pt-[15px] text-xs font-semibold leading-[1.6] text-[#166534]">
+            View Event <ArrowUpRight size={18} aria-hidden="true" />
+          </span>
+        ) : (
+          <Link href={`/events/${event._id}`} className="flex items-center justify-between border-t border-[#dce4da] pt-[15px] text-xs font-semibold leading-[1.6] text-[#166534]">
+            View Event <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
+        )}
       </div>
     </article>
   );

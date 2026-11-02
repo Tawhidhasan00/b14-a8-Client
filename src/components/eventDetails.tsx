@@ -1,20 +1,9 @@
+import { EventDetailsData } from "@/lib/type";
 import { ArrowLeft, CalendarDays, Clock3, MapPin, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export type EventDetailsData = {
-  title: string;
-  eventType: string;
-  location: string;
-  date: string;
-  duration: number;
-  description: string;
-  meetingPoint: string;
-  whatToBring: string;
-  creatorName: string;
-  thumbnail?: string;
-  image?: string;
-};
+
 
 export function EventDetails({ event }: { event: EventDetailsData }) {
   const details = [

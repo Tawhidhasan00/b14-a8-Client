@@ -1,12 +1,15 @@
-import { EventDetails, type EventDetailsData } from "@/components/eventDetails";
+import { EventDetails  } from "@/components/eventDetails";
+import { EventDetailsData } from "@/lib/type";
 import { notFound } from "next/navigation";
 
 const EventPage = async({params}: { params: Promise<{ id: string }> }) => {
 
 const { id } = await params;
-const response = await fetch("http://localhost:5000/events");
-const events: (EventDetailsData & { _id: string })[] = await response.json();
-const event = events.find((item) => String(item._id) === id);
+const res = await fetch(`http://localhost:5000/events/${id}`);
+const event = await res.json();
+
+// const events: (EventDetailsData & { _id: string })[] = await response.json();
+// const event = events.find((item) => String(item._id) === id);
 
 if (!event) notFound();
 

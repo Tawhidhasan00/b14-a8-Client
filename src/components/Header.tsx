@@ -10,8 +10,9 @@ export default function Header() {
         <Brand />
         <nav className="desktop-navigation" aria-label="Main navigation">
           <Link href="/" aria-current="page">Home</Link>
-          <Link href="#upcoming-events">Upcoming Events</Link>
-          <Link href="#how-it-works">How it works</Link>
+          <Link href="/events">Upcoming Events</Link>
+          <Link href="/manage-events">My Events</Link>
+          <Link href="/#how-it-works">How it works</Link>
         </nav>
         <div className="header-actions">
           <Button type="button" variant="outline" size="icon" className="theme-button" aria-label="Dark theme (coming soon)" disabled>
@@ -24,8 +25,9 @@ export default function Header() {
             <summary aria-label="Open navigation"><Menu aria-hidden="true" /></summary>
             <nav aria-label="Mobile navigation">
               <Link href="/" aria-current="page">Home</Link>
-              <Link href="#upcoming-events">Upcoming Events</Link>
-              <Link href="#how-it-works">How it works</Link>
+              <Link href="/events">Upcoming Events</Link>
+              <Link href="/manage-events">My Events</Link>
+              <Link href="/#how-it-works">How it works</Link>
             </nav>
           </details>
         </div>

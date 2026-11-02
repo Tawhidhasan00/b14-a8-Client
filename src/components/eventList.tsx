@@ -1,5 +1,8 @@
 import { Search, SlidersHorizontal } from "lucide-react";
-import { EventCard, type EventCardData } from "./eventCard";
+import Link from "next/link";
+import { EventCard } from "./eventCard";
+import { buttonVariants } from "@/components/ui/button";
+import { EventCardData } from "@/lib/type";
 
 
 const EventsList = async() => {
@@ -40,11 +43,26 @@ const EventsList = async() => {
       </label>
     </div>
 
-    <div className="grid grid-cols-3 gap-[25px] max-[860px]:grid-cols-2 max-[600px]:grid-cols-1">
-      {events.map((event) => (
-        <EventCard key={event.title} event={event} />
-      ))}
-    </div>
+    {events.length ? (
+      <div className="grid grid-cols-3 gap-[25px] max-[860px]:grid-cols-2 max-[600px]:grid-cols-1">
+        {events.map((event) => (
+          <EventCard key={event.title} event={event} />
+        ))}
+      </div>
+    ) : (
+      <div className="rounded-[13px] border border-dashed border-border bg-card px-5 py-[58px] text-center">
+        <h3 className="text-xl font-semibold leading-[1.6]">No events found just yet.</h3>
+        <p className="mx-auto mb-[22px] mt-[10px] max-w-[450px] text-sm leading-[1.6] text-(--home-muted)">
+          Try another neighborhood or start an initiative of your own.
+        </p>
+        <Link
+          href="/create-event"
+          className={buttonVariants({ className: "h-auto min-h-12 rounded-[9px] px-[23px] py-3 text-sm font-semibold leading-[1.6]" })}
+        >
+          Create an Event
+        </Link>
+      </div>
+    )}
   </div>
     );
 };
