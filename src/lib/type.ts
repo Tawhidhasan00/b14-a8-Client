@@ -22,5 +22,6 @@ export type EventDetailsData = {
   creatorName: string;
   thumbnail?: string;
   image?: string;
+  _id?: string;
 };
 

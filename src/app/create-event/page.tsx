@@ -1,7 +1,7 @@
 
 import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
-import EventForm from "@/components/event-form";
+import EventForm from "@/components/forms/event-form";
 
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default function CreateEventPage() {
 
         <Card className="w-full max-w-200 rounded-[14px] border-border bg-card text-foreground shadow-none">
           <CardContent className="p-8 max-[600px]:p-5.75">
-            <EventForm/>
+            <EventForm mode="create" />
           </CardContent>
         </Card>
       </div>

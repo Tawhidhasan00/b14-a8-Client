@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import { EventEditForm } from "@/components/event-edit-form";
+import EventForm from "@/components/forms/event-form";
 import EventEdit from "@/components/eventEdit";
-import { sampleEvents } from "@/components/myEvent";
 import ManageEventsPage from "@/app/manage-events/page";
 
 export default async function EditEventPage({ params, searchParams }: {
@@ -9,7 +8,11 @@ export default async function EditEventPage({ params, searchParams }: {
   searchParams: Promise<{ dialog?: string }>;
 }) {
   const { id } = await params;
-  const event = sampleEvents.find((item) => item._id === id);
+  const res = await fetch(`http://localhost:5000/events/${id}`)
+  if (res.status === 404) notFound();
+  if (!res.ok) throw new Error("Could not load event");
+
+  const event = await res.json();
   if (!event) notFound();
 
   if ((await searchParams).dialog === "true") {
@@ -34,11 +37,8 @@ export default async function EditEventPage({ params, searchParams }: {
           Make your changes below. Your volunteers will see the latest event details.
         </p>
       </div>
-      <p className="mb-[18px] border-l-2 border-[#c6a54a] pl-[11px] text-[11px] leading-[1.6] text-(--home-muted)">
-        Sample initiative
-      </p>
       <div className="max-w-[800px] rounded-[14px] border border-border bg-card p-8 max-[600px]:p-[23px]">
-        <EventEditForm event={event} />
+        <EventForm mode="edit" event={event} />
       </div>
     </section>
   );

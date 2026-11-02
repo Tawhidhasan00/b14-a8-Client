@@ -1,7 +1,14 @@
 import Link from "next/link";
 import MyEvents from "@/components/myEvent";
 
-export default function ManageEventsPage() {
+
+import React from 'react';
+
+const ManageEventsPage = async() => {
+
+  const res = await fetch("http://localhost:5000/events", { cache: "no-store" });
+  const events = await res.json();
+
   return (
     <section className="site-container min-h-[65vh] pb-[85px] pt-[55px] text-foreground max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
       <div className="flex items-center justify-between gap-5 max-[600px]:mb-[25px] max-[600px]:flex-col max-[600px]:items-start max-[600px]:gap-0">
@@ -20,10 +27,11 @@ export default function ManageEventsPage() {
           + Create Event
         </Link>
       </div>
-      <p className="mb-[18px] border-l-2 border-[#c6a54a] pl-[11px] text-[11px] leading-[1.6] text-(--home-muted)">
-        Sample initiatives
-      </p>
-      <MyEvents />
+      <MyEvents events={events} />
     </section>
   );
-}
+};
+
+export default ManageEventsPage;
+
+
