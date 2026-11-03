@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import EventDelete from "./eventDelete";
 
 export type MyEventData = EventDetailsData & { _id: string };
 
@@ -94,9 +95,8 @@ export default function MyEvents({ events }: { events: MyEventData[] }) {
                   <DialogClose render={<Button type="button" variant="outline" className="h-auto min-h-12 rounded-[9px] px-[23px] py-3 text-sm font-semibold leading-[1.6]" />}>
                     Keep Event
                   </DialogClose>
-                  <Button type="button" disabled className="h-auto min-h-12 rounded-[9px] bg-[#b42318] px-[23px] py-3 text-sm font-semibold leading-[1.6] text-white">
-                    Delete Event
-                  </Button>
+                  
+                  <EventDelete eventId={event._id} />
                 </DialogFooter>
               </DialogContent>
             </Dialog>

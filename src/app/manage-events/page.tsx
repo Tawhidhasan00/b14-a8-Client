@@ -2,8 +2,6 @@ import Link from "next/link";
 import MyEvents from "@/components/myEvent";
 
 
-import React from 'react';
-
 const ManageEventsPage = async() => {
 
   const res = await fetch("http://localhost:5000/events", { cache: "no-store" });
