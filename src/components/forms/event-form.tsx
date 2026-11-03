@@ -52,8 +52,8 @@ const handleSubmit = async (
   try {
     const response = await fetch(
       isEditing
-        ? `http://localhost:5000/events/${event?._id}`
-        : "http://localhost:5000/create-event",
+        ? `${process.env.NEXT_PUBLIC_API_URL}/events/${event?._id}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/create-event`,
       {
         method: isEditing ? "PATCH" : "POST",
         headers: {

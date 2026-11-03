@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 const EventPage = async({params}: { params: Promise<{ id: string }> }) => {
 
 const { id } = await params;
-const res = await fetch(`http://localhost:5000/events/${id}`);
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`);
 const event = await res.json();
 
 // const events: (EventDetailsData & { _id: string })[] = await response.json();

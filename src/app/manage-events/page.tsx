@@ -4,7 +4,7 @@ import MyEvents from "@/components/myEvent";
 
 const ManageEventsPage = async() => {
 
-  const res = await fetch("http://localhost:5000/events", { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, { cache: "no-store" });
   const events = await res.json();
 
   return (

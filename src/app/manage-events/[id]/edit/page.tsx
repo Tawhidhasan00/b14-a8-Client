@@ -8,7 +8,7 @@ export default async function EditEventPage({ params, searchParams }: {
   searchParams: Promise<{ dialog?: string }>;
 }) {
   const { id } = await params;
-  const res = await fetch(`http://localhost:5000/events/${id}`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`)
   if (res.status === 404) notFound();
   if (!res.ok) throw new Error("Could not load event");
 
