@@ -60,6 +60,12 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   }
 };
 
+const handleGoogleAuth = async() => {
+  const data = await authClient.signIn.social({
+    provider: "google",
+  });
+}
+
   return (
     <section className="site-container pb-20 pt-[55px] max-[600px]:pb-[50px] max-[600px]:pt-[30px]">
       <div className="mx-auto grid max-w-250 grid-cols-2 overflow-hidden rounded-[19px] border border-border bg-card max-[600px]:grid-cols-1">
@@ -164,10 +170,13 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
           <div className="my-[21px] flex items-center gap-3 text-[10px] leading-[1.6] text-(--home-muted) before:h-px before:flex-1 before:bg-border before:content-[''] after:h-px after:flex-1 after:bg-border after:content-['']">
             or keep it simple
           </div>
-          <Button type="button" variant="outline" disabled className={`${buttonClassName} border-border bg-transparent text-foreground`}>
+
+          <Button onClick={handleGoogleAuth}
+                 type="button" variant="outline" className={`${buttonClassName} cursor-pointer border-border bg-transparent text-foreground transition-[background-color,border-color,box-shadow] duration-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm`}>
             <span className="text-[19px] font-bold leading-none" aria-hidden="true">G</span>
             Continue with Google
           </Button>
+
           <p className="mt-6 text-center text-xs leading-[1.6] text-(--home-muted)">
             {register ? "Already part of the community?" : "New around here?"}{" "}
             <Link href={register ? "/login" : "/register"} className="font-semibold text-primary hover:underline">
