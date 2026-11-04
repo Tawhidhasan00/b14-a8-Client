@@ -1,11 +1,22 @@
 import Link from "next/link";
 import MyEvents from "@/components/myEvent";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import type { MyEventData } from "@/components/myEvent";
 
 
 const ManageEventsPage = async() => {
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, { cache: "no-store" });
-  const events = await res.json();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/login");
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/my-events/user/${encodeURIComponent(session.user.email)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error("Could not load your events");
+  const events: MyEventData[] = await res.json();
 
   return (
     <section className="site-container min-h-[65vh] pb-[85px] pt-[55px] text-foreground max-[600px]:pb-[60px] max-[600px]:pt-[35px]">

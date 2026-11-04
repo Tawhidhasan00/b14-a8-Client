@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Pencil } from "lucide-react";
-import EventForm from "@/components/forms/event-form";
+import ManageEventForm from "@/components/forms/manage-event-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -70,8 +70,7 @@ export default function EventEdit({
           </DialogDescription>
         </DialogHeader>
 
-        <EventForm
-          mode="edit"
+        <ManageEventForm
           event={event}
           cancelAction={
             <DialogClose render={<Button type="button" variant="outline" className={`${actionClassName} bg-transparent`} />}>

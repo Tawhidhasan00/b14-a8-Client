@@ -1,7 +1,10 @@
+'use client'
 import { EventDetailsData } from "@/lib/type";
-import { ArrowLeft, CalendarDays, Clock3, MapPin, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, Clock3, MapPin, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 
 
 
@@ -12,6 +15,48 @@ export function EventDetails({ event }: { event: EventDetailsData }) {
     { icon: Clock3, label: "YOUR TIME", value: `${event.duration} minutes` },
     { icon: UserRound, label: "ORGANIZED BY", value: event.creatorName },
   ];
+
+  const {data: session} = authClient.useSession();
+  const user = session?.user;
+  const [joinStatus, setJoinStatus] = useState<"idle" | "joining" | "joined">("idle");
+
+  const handleJoin = async() => {
+    if (joinStatus !== "idle") return;
+
+    if (!user?.email) {
+      alert("Please log in before joining");
+      return;
+    }
+
+    const { _id: eventId, ...eventData } = event;
+const data = {
+  ...eventData,
+  eventId,
+  name: user.name,
+  email: user.email,
+  participantImage: user.image,
+};
+    setJoinStatus("joining");
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        throw new Error("Could not join the event. Please try again.");
+      }
+      const joinedData = await res.json();
+      console.log(joinedData);
+      setJoinStatus("joined");
+    } catch (error) {
+      setJoinStatus("idle");
+      alert(error instanceof Error ? error.message : "Could not join the event. Please try again.");
+    }
+  }
+
 
   return (
     <section className="container mx-auto min-h-[65vh] w-[min(1200px,calc(100%-64px))] pb-[85px] pt-[55px] text-[#17251d] max-[600px]:w-[calc(100%-36px)] max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
@@ -72,12 +117,17 @@ export function EventDetails({ event }: { event: EventDetailsData }) {
             </div>
           ))}
         </div>
-        <Link
-          href={'/joined-events'}
-          className="mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-[9px] border border-transparent bg-[#166534] px-[23px] py-3 text-sm font-semibold leading-[1.6] text-white transition-[opacity,transform] duration-200 hover:-translate-y-px hover:opacity-90"
+
+        <button onClick={handleJoin}
+          type="button"
+          disabled={joinStatus !== "idle"}
+          aria-busy={joinStatus === "joining"}
+          className="mt-2 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[9px] border border-transparent bg-[#166534] px-[23px] py-3 text-sm font-semibold leading-[1.6] text-white transition-[opacity,transform] duration-200 hover:-translate-y-px hover:opacity-90 disabled:cursor-default disabled:hover:translate-y-0 disabled:hover:opacity-100"
         >
-            Join Event
-        </Link>
+            {joinStatus === "joined" ? (
+              <><Check size={17} aria-hidden="true" /> Joined</>
+            ) : joinStatus === "joining" ? "Joining..." : "Join Event"}
+        </button>
 
         <p className="mt-3 text-center text-[10px] text-[#59675e]">
           A little of your time. A whole lot of good.

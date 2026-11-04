@@ -1,25 +1,36 @@
-import { notFound } from "next/navigation";
-import EventForm from "@/components/forms/event-form";
+import { notFound, redirect } from "next/navigation";
+import ManageEventForm from "@/components/forms/manage-event-form";
 import EventEdit from "@/components/eventEdit";
 import ManageEventsPage from "@/app/manage-events/page";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import type { MyEventData } from "@/components/myEvent";
 
 export default async function EditEventPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ dialog?: string }>;
 }) {
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/login");
+
   const { id } = await params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-events/${id}`, { cache: "no-store" })
   if (res.status === 404) notFound();
   if (!res.ok) throw new Error("Could not load event");
 
-  const event = await res.json();
-  if (!event) notFound();
+  const myEvent: MyEventData | null = await res.json();
+  if (!myEvent) notFound();
+  const isOwner = myEvent.creatorId
+    ? myEvent.creatorId === session.user.id
+    : myEvent.email === session.user.email;
+  if (!isOwner) notFound();
 
   if ((await searchParams).dialog === "true") {
     return (
       <>
         <ManageEventsPage />
-        <EventEdit event={event} routed />
+        <EventEdit event={myEvent} routed />
       </>
     );
   }
@@ -38,7 +49,7 @@ export default async function EditEventPage({ params, searchParams }: {
         </p>
       </div>
       <div className="max-w-[800px] rounded-[14px] border border-border bg-card p-8 max-[600px]:p-[23px]">
-        <EventForm mode="edit" event={event} />
+        <ManageEventForm event={myEvent} />
       </div>
     </section>
   );

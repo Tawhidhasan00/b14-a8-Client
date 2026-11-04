@@ -11,6 +11,8 @@ export type EventCardData = {
 };
 
 export type EventDetailsData = {
+  creatorId?: string;
+  email?: string;
   title: string;
   eventType: string;
   location: string;

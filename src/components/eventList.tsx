@@ -7,7 +7,8 @@ import { EventCardData } from "@/lib/type";
 
 const EventsList = async() => {
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Could not load events");
     const events: EventCardData[] = await res.json();
     // console.log(events)
 
@@ -46,7 +47,7 @@ const EventsList = async() => {
     {events.length ? (
       <div className="grid grid-cols-3 gap-[25px] max-[860px]:grid-cols-2 max-[600px]:grid-cols-1">
         {events.map((event) => (
-          <EventCard key={event.title} event={event} />
+          <EventCard key={event._id} event={event} />
         ))}
       </div>
     ) : (

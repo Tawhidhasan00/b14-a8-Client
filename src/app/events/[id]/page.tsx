@@ -1,5 +1,5 @@
 import { EventDetails  } from "@/components/eventDetails";
-import { EventDetailsData } from "@/lib/type";
+// import { EventDetailsData } from "@/lib/type";
 import { notFound } from "next/navigation";
 
 const EventPage = async({params}: { params: Promise<{ id: string }> }) => {

@@ -45,9 +45,7 @@ export function ProfileForm({
 
 const router = useRouter();
 
-const handleSubmit = async (
-  event: FormEvent<HTMLFormElement>
-) => {
+const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
   event.preventDefault();
 
   const formData = new FormData(event.currentTarget);

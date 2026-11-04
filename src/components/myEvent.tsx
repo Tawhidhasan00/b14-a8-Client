@@ -33,6 +33,7 @@ function formatEventDate(date: string) {
 }
 
 export default function MyEvents({ events }: { events: MyEventData[] }) {
+  
   if (!events.length) {
     return (
       <div className="rounded-[13px] border border-dashed border-border bg-card px-5 py-[58px] text-center">

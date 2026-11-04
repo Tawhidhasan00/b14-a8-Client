@@ -11,12 +11,17 @@ const EventDelete = ({eventId}: {eventId: string}) => {
   const handleDelete = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/events/${eventId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/my-events/${eventId}`,
         { method: "DELETE" }
       );
 
       if (!res.ok) {
         throw new Error("Could not delete the event");
+      }
+
+      const result = await res.json();
+      if (result.deletedCount !== 1) {
+        throw new Error("Event no longer exists");
       }
 
       router.refresh();

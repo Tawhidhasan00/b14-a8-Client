@@ -1,11 +1,31 @@
-import React from 'react';
+import JoinedEvents from "@/components/joinedEvent";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-const JoinEventPage = () => {
-    return (
-        <div>
-            Joined
-        </div>
-    );
-};
+export default async function JoinedEventsPage() {
 
-export default JoinEventPage;
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  const user = session?.user;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined-events/${user?.email}`)
+  const joinedData = await res.json();
+  
+
+  return (
+    <section className="site-container min-h-[65vh] pb-[85px] pt-[55px] text-foreground max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
+      <div className="mb-[34px] max-w-[680px]">
+        <p className="mb-3 text-[10px] font-bold uppercase leading-[1.6] tracking-[1.7px] text-primary max-[600px]:text-[8px] max-[600px]:tracking-[1.2px]">
+          The causes you care about
+        </p>
+        <h1 className="text-[clamp(30px,4vw,43px)] font-semibold leading-[1.2] tracking-[-1.5px]">
+          Your time, making a difference.
+        </h1>
+        <p className="mt-[14px] text-sm leading-[1.8] text-(--home-muted)">
+          All the initiatives you&apos;ve joined, sorted by event date. Here&apos;s where you&apos;re showing up.
+        </p>
+      </div>
+      <JoinedEvents events={joinedData} />
+    </section>
+  );
+}
