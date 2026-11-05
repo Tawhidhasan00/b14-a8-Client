@@ -8,7 +8,8 @@ export default async function JoinedEventsPage() {
     headers: await headers()
   });
   const user = session?.user;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined-events/${user?.email}`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined-events/${user?.email}`, { cache: "no-store" })
+  if (!res.ok) throw new Error("Could not load joined events");
   const joinedData = await res.json();
   
 

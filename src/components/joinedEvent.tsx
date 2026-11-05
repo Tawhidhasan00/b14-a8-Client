@@ -5,6 +5,7 @@ import { EventCardData } from "@/lib/type";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 
 
@@ -38,18 +39,20 @@ const handleRemove = async (registrationId: string) => {
     );
 
     if (!res.ok) {
-      throw new Error("Could not remove registration");
+      const errorBody = await res.json().catch(() => null);
+      throw new Error(errorBody?.message || "Could not remove registration");
     }
 
     const result = await res.json();
 
     if (result.deletedCount === 1) {
+      toast.success("Event removed from your joined events");
       router.refresh();
     } else {
-      alert("Registration was not found");
+      toast.error("Registration was not found");
     }
-  } catch {
-    alert("Could not remove registration. Please try again.");
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : "Could not remove registration. Please try again.");
   }
 };
 

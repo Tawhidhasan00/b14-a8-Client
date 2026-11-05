@@ -19,6 +19,7 @@ import { ArrowUpRight, Menu, Moon } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function Header() {
 
@@ -33,14 +34,15 @@ const handleLogout = async () => {
     const { error } = await authClient.signOut();
 
     if (error) {
-      alert(error.message || "Could not log out");
+      toast.error(error.message || "Could not log out");
       return;
     }
 
+    toast.success("Logged out successfully");
     router.replace("/");
     router.refresh();
   } catch {
-    alert("Could not log out. Please try again.");
+    toast.error("Could not log out. Please try again.");
   }
 };
 
@@ -63,6 +65,8 @@ const handleLogout = async () => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger
+                openOnHover
+                closeDelay={150}
                 render={
                   <Button
                     type="button"

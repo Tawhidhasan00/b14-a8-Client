@@ -8,6 +8,9 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
+import { getEarliestEventDate, getEventValidationError } from "@/lib/event-validation";
+import { notifyInvalidField } from "@/lib/form-feedback";
 
 const fieldClassName = "flex min-w-0 flex-col gap-[7px]";
 const inputClassName =
@@ -25,13 +28,18 @@ export default function EventForm() {
     submitEvent.preventDefault();
     if (isPending || isSubmitting) return;
     if (!session?.user) {
-      alert("Please log in before creating an event");
+      toast.error("Please log in before creating an event");
       return;
     }
 
     const formValues = Object.fromEntries(
       new FormData(submitEvent.currentTarget).entries()
     );
+    const validationError = getEventValidationError(formValues);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
     const payload = {
       ...formValues,
       duration: Number(formValues.duration),
@@ -60,10 +68,11 @@ export default function EventForm() {
 
       const result = await res.json();
       console.log(result);
+      toast.success("Event created successfully");
       router.replace("/manage-events");
       router.refresh();
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
       setIsSubmitting(false);
     }
@@ -72,6 +81,7 @@ export default function EventForm() {
   return (
     <form
       onSubmit={handleSubmit}
+      onInvalidCapture={notifyInvalidField}
       className="grid grid-cols-2 gap-5 max-[600px]:grid-cols-1"
       aria-label="Create a community event"
     >
@@ -81,6 +91,7 @@ export default function EventForm() {
           className={inputClassName}
           id={`${idPrefix}-title`}
           name="title"
+          required
           placeholder="Give your initiative a clear, friendly name"
         />
       </div>
@@ -90,6 +101,7 @@ export default function EventForm() {
         <select
           id={`${idPrefix}-type`}
           name="eventType"
+          required
           defaultValue=""
           className={`${inputClassName} has-[option:checked[value='']]:text-(--home-muted) [&_option]:text-foreground`}
         >
@@ -109,6 +121,7 @@ export default function EventForm() {
           className={inputClassName}
           id={`${idPrefix}-location`}
           name="location"
+          required
           placeholder="e.g. Dhanmondi, Dhaka"
         />
       </div>
@@ -121,10 +134,11 @@ export default function EventForm() {
           name="date"
           type="date"
           required
+          min={getEarliestEventDate()}
           aria-describedby={`${idPrefix}-date-hint`}
         />
         <small id={`${idPrefix}-date-hint`} className="text-[10px] leading-[1.6] text-[var(--home-muted)]">
-          Choose a future date for your initiative.
+          Choose tomorrow or later. Dates use Bangladesh time.
         </small>
       </div>
 
@@ -150,6 +164,8 @@ export default function EventForm() {
           id={`${idPrefix}-thumbnail`}
           name="thumbnail"
           type="url"
+          required
+          pattern="https?://.+"
           placeholder="https://example.com/community-photo.jpg"
         />
       </div>
@@ -160,6 +176,7 @@ export default function EventForm() {
           className={cn(inputClassName, "min-h-[140px] resize-y")}
           id={`${idPrefix}-description`}
           name="description"
+          required
           rows={5}
           placeholder="What will volunteers do, and why does it matter?"
         />

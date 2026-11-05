@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import UpcomingEvents from "@/components/upcoming-events";
 import { ArrowDown, ArrowUpRight, CalendarHeart, HeartHandshake, MapPin, Sparkles, Sprout, Users } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,8 +60,9 @@ export default function Home() {
         <section className="events-section section-space" id="upcoming-events" aria-labelledby="events-title">
           <div className="site-container">
             <div className="section-heading"><div><p className="eyebrow">Find your next good thing</p><h2 id="events-title">Around the corner. Coming up.</h2></div><Link href="/events" className="text-cta">Explore all events <ArrowUpRight aria-hidden="true" /></Link></div>
-            {/* Static reference state; event fetching can be connected later. */}
-            <div className="events-placeholder"><h3>We couldn&apos;t load the events.</h3><p>Something went wrong. Please try again.</p><Button type="button" variant="outline" className="retry-button" disabled title="Event loading will be connected later">Try again</Button></div>
+            <Suspense fallback={<div className="events-placeholder" role="status"><p>Finding upcoming events...</p></div>}>
+              <UpcomingEvents />
+            </Suspense>
           </div>
         </section>
 

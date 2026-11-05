@@ -3,6 +3,8 @@
 import type { FormEvent, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
+import { notifyInvalidField } from "@/lib/form-feedback";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -53,7 +55,7 @@ const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
   const image = String(formData.get("image") || "").trim();
 
   if (!name) {
-    alert("Please enter your name");
+    toast.error("Please enter your name");
     return;
   }
 
@@ -64,15 +66,16 @@ const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     });
 
     if (error) {
-      alert(error.message || "Could not update profile");
+      toast.error(error.message || "Could not update profile");
       return;
     }
 
+    toast.success("Profile updated successfully");
     onSaved?.();
     router.replace("/profile");
     router.refresh();
-  } catch {
-    alert("Could not update profile. Please try again.");
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : "Could not update profile. Please try again.");
   }
 };
   
@@ -84,6 +87,7 @@ const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         </p>
       )}
       <form onSubmit={handleSubmit}
+           onInvalidCapture={notifyInvalidField}
            aria-label="Your profile" className={cn("flex max-w-[600px] flex-col gap-[18px] rounded-[14px] border border-border bg-card p-8 max-[600px]:p-[23px]", className)}>
         {profile.image ? (
           <Image

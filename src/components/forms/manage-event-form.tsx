@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import type { FormEvent, ReactNode } from "react";
 import type { EventDetailsData } from "@/lib/type";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { getEarliestEventDate, getEventValidationError } from "@/lib/event-validation";
+import { notifyInvalidField } from "@/lib/form-feedback";
 
 const fieldClassName = "flex min-w-0 flex-col gap-[7px]";
 const inputClassName =
@@ -28,13 +31,18 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
   const handleSubmit = async (submitEvent: FormEvent<HTMLFormElement>) => {
     submitEvent.preventDefault();
     if (!event?._id) {
-      alert("Event ID is missing");
+      toast.error("Event ID is missing");
       return;
     }
 
     const formValues = Object.fromEntries(
       new FormData(submitEvent.currentTarget).entries()
     );
+    const validationError = getEventValidationError(formValues);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
     const payload = {
       ...formValues,
       duration: Number(formValues.duration),
@@ -47,22 +55,27 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           body: JSON.stringify(payload),
         }
       );
-      if (!res.ok) throw new Error("Could not save event");
+      if (!res.ok) {
+        const errorBody = await res.json().catch(() => null);
+        throw new Error(errorBody?.message || `Could not save event (HTTP ${res.status})`);
+      }
 
       const result = await res.json();
       console.log(result);
       if (result.matchedCount === 0) throw new Error("Event no longer exists");
 
+      toast.success("Event updated successfully");
       router.replace("/manage-events");
       router.refresh();
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
+      onInvalidCapture={notifyInvalidField}
       className="grid grid-cols-2 gap-5 max-[600px]:grid-cols-1"
       aria-label="Edit a community event"
     >
@@ -72,6 +85,7 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           className={inputClassName}
           id={`${idPrefix}-title`}
           name="title"
+          required
           defaultValue={event?.title}
           placeholder="Give your initiative a clear, friendly name"
         />
@@ -82,6 +96,7 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
         <select
           id={`${idPrefix}-type`}
           name="eventType"
+          required
           defaultValue={event?.eventType || ""}
           className={inputClassName}
         >
@@ -101,6 +116,7 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           className={inputClassName}
           id={`${idPrefix}-location`}
           name="location"
+          required
           defaultValue={event?.location}
           placeholder="e.g. Dhanmondi, Dhaka"
         />
@@ -114,6 +130,7 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           name="date"
           type="date"
           required
+          min={getEarliestEventDate()}
           defaultValue={event?.date}
           aria-describedby={`${idPrefix}-date-hint`}
         />
@@ -144,6 +161,8 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           id={`${idPrefix}-thumbnail`}
           name="thumbnail"
           type="url"
+          required
+          pattern="https?://.+"
           defaultValue={thumbnail}
           placeholder="https://example.com/community-photo.jpg"
         />
@@ -165,6 +184,7 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
           className={cn(inputClassName, "min-h-[140px] resize-y")}
           id={`${idPrefix}-description`}
           name="description"
+          required
           defaultValue={event?.description}
           placeholder="What will volunteers do, and why does it matter?"
         />

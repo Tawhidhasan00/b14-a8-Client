@@ -3,6 +3,8 @@
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
+import { notifyInvalidField } from "@/lib/form-feedback";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -45,14 +47,15 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         });
 
     if (result.error) {
-      alert(result.error.message || "Authentication failed");
+      toast.error(result.error.message || "Authentication failed");
       return;
     }
 
+    toast.success(register ? "Account created successfully" : "Logged in successfully");
     router.replace("/");
     router.refresh();
   } catch (error) {
-    alert(
+    toast.error(
       error instanceof Error
         ? error.message
         : "Could not connect. Please try again."
@@ -61,9 +64,15 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 };
 
 const handleGoogleAuth = async() => {
-  const data = await authClient.signIn.social({
-    provider: "google",
-  });
+  try {
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/?auth=google",
+    });
+    if (error) toast.error(error.message || "Could not log in with Google");
+  } catch {
+    toast.error("Could not log in with Google. Please try again.");
+  }
 }
 
   return (
@@ -100,6 +109,7 @@ const handleGoogleAuth = async() => {
           </p>
 
           <form onSubmit={handleSubmit}
+                onInvalidCapture={notifyInvalidField}
                 className="flex flex-col gap-4.5" aria-label={register ? "Create an account" : "Login"}>
             {register && (
               <div className={fieldClassName}>

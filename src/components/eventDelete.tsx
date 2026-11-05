@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 
 const EventDelete = ({eventId}: {eventId: string}) => {
@@ -16,7 +17,8 @@ const EventDelete = ({eventId}: {eventId: string}) => {
       );
 
       if (!res.ok) {
-        throw new Error("Could not delete the event");
+        const errorBody = await res.json().catch(() => null);
+        throw new Error(errorBody?.message || "Could not delete the event");
       }
 
       const result = await res.json();
@@ -24,9 +26,10 @@ const EventDelete = ({eventId}: {eventId: string}) => {
         throw new Error("Event no longer exists");
       }
 
+      toast.success("Event deleted successfully");
       router.refresh();
     } catch (error) {
-      alert(
+      toast.error(
         error instanceof Error
           ? error.message
           : "Something went wrong"

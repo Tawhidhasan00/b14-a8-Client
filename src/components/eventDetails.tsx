@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 
 
@@ -24,7 +25,7 @@ export function EventDetails({ event }: { event: EventDetailsData }) {
     if (joinStatus !== "idle") return;
 
     if (!user?.email) {
-      alert("Please log in before joining");
+      toast.error("Please log in before joining");
       return;
     }
 
@@ -46,14 +47,20 @@ const data = {
         body: JSON.stringify(data)
       });
       if (!res.ok) {
-        throw new Error("Could not join the event. Please try again.");
+        const errorBody = await res.json().catch(() => null);
+        throw new Error(errorBody?.message || "Could not join the event. Please try again.");
       }
       const joinedData = await res.json();
       console.log(joinedData);
       setJoinStatus("joined");
+      if (joinedData.alreadyJoined) {
+        toast("You have already joined this event");
+      } else {
+        toast.success("Joined event successfully");
+      }
     } catch (error) {
       setJoinStatus("idle");
-      alert(error instanceof Error ? error.message : "Could not join the event. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Could not join the event. Please try again.");
     }
   }
 

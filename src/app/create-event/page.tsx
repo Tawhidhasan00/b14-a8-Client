@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Card, CardContent } from "@/components/ui/card";
 import EventForm from "@/components/forms/event-form";
 
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
 
 
 
-export default function CreateEventPage() {
-
-
+export default async function CreateEventPage() {
+  // Recalculate the earliest date on each visit instead of freezing it at build time.
+  await connection();
 
   return (
     <section
