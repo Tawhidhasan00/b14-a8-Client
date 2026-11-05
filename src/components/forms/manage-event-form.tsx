@@ -12,6 +12,9 @@ import toast from "react-hot-toast";
 import { getEarliestEventDate, getEventValidationError } from "@/lib/event-validation";
 import { notifyInvalidField } from "@/lib/form-feedback";
 
+
+import { authClient } from "@/lib/auth-client";
+
 const fieldClassName = "flex min-w-0 flex-col gap-[7px]";
 const inputClassName =
   "h-auto min-h-11 w-full min-w-0 rounded-[7px] border border-border bg-background px-[13px] py-[11px] text-[13px] leading-[1.6] text-foreground shadow-none placeholder:text-[#89948b] focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 md:text-[13px]";
@@ -49,9 +52,17 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
     };
 
     try {
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error(error?.message || "Could not get JWT token");
+      }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-events/${event._id}`,{
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            authorization: `Bearer ${data?.token}`
+          },
           body: JSON.stringify(payload),
         }
       );
@@ -61,7 +72,6 @@ export default function ManageEventForm({ event, cancelAction }: ManageEventForm
       }
 
       const result = await res.json();
-      console.log(result);
       if (result.matchedCount === 0) throw new Error("Event no longer exists");
 
       toast.success("Event updated successfully");

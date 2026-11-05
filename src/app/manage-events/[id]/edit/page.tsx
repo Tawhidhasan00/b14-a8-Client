@@ -14,8 +14,12 @@ export default async function EditEventPage({ params, searchParams }: {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
   const { id } = await params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-events/${id}`, { cache: "no-store" })
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-events/${id}`, {
+    cache: "no-store",
+    headers: { authorization: `Bearer ${jwtToken.token}` },
+  })
   if (res.status === 404) notFound();
   if (!res.ok) throw new Error("Could not load event");
 

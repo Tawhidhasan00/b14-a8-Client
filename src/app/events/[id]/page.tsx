@@ -1,24 +1,34 @@
 import { EventDetails  } from "@/components/eventDetails";
-// import { EventDetailsData } from "@/lib/type";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 const EventPage = async({params}: { params: Promise<{ id: string }> }) => {
 
-const { id } = await params;
-const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`);
-const event = await res.json();
+    const { id } = await params;
+    // const jwtToken = await auth.api.getToken({
+    //     headers: await headers()
+    // })
+    // console.log(jwtToken?.token)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}`, {
+        // headers: {
+        //     authorization: jwtToken?.token
+        // }
+        cache: "no-store" 
+    });
+    const event = await res.json();
 
-// const events: (EventDetailsData & { _id: string })[] = await response.json();
-// const event = events.find((item) => String(item._id) === id);
+        if (!event) {
+            notFound();
+        }
+        
 
-if (!event) notFound();
-
-    return (
-        <div>
-            <EventDetails event={event} />
-        </div>
-    );
-};
+        return (
+            <div>
+                <EventDetails event={event} />
+            </div>
+        );
+    };
 
 export default EventPage;
 

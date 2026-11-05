@@ -82,7 +82,7 @@ export default function MyEvents({ events }: { events: MyEventData[] }) {
               Edit
             </Link>
             <Dialog>
-              <DialogTrigger render={<Button type="button" variant="outline" className="h-auto min-h-10 rounded-[9px] border-[#f0ceca] bg-[#fff4f2] px-[18px] py-2 text-[13px] font-semibold leading-[1.6] text-[#b42318] hover:bg-[#fee4e2] hover:text-[#b42318]" />}>
+              <DialogTrigger render={<Button type="button" variant="outline" className="h-auto min-h-10 rounded-[9px] border-[#f0ceca] dark:border-[#694039] bg-[#fff4f2] dark:bg-[#382320] dark:hover:bg-[#492b25] px-[18px] py-2 text-[13px] font-semibold leading-[1.6] text-[#b42318] dark:text-[#f5aaa1] dark:hover:text-[#f5aaa1] hover:bg-[#fee4e2] hover:text-[#b42318]" />}>
                 Delete
               </DialogTrigger>
               <DialogContent className="w-[calc(100%-2rem)] max-w-[440px] gap-0 rounded-2xl border border-border bg-card p-[29px] text-foreground ring-0 sm:max-w-[440px]">

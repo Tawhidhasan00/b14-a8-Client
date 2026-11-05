@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 
 const EventDelete = ({eventId}: {eventId: string}) => {
@@ -11,9 +12,17 @@ const EventDelete = ({eventId}: {eventId: string}) => {
 
   const handleDelete = async () => {
     try {
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error(error?.message || "Could not get JWT token");
+      }
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/my-events/${eventId}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+          headers: { authorization: `Bearer ${data.token}` },
+        }
       );
 
       if (!res.ok) {

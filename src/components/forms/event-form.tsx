@@ -50,11 +50,19 @@ export default function EventForm() {
 
     setIsSubmitting(true);
     try {
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error(error?.message || "Could not get JWT token");
+      }
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/my-events`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${data.token}`,
+          },
           body: JSON.stringify(payload),
         }
       );
@@ -66,10 +74,9 @@ export default function EventForm() {
         throw new Error(`${message} (HTTP ${res.status})`);
       }
 
-      const result = await res.json();
-      console.log(result);
+      await res.json();
       toast.success("Event created successfully");
-      router.replace("/manage-events");
+      router.replace("/events");
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Something went wrong");

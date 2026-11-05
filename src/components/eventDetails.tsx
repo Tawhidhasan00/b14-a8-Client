@@ -39,10 +39,16 @@ const data = {
 };
     setJoinStatus("joining");
     try {
+      const { data: tokenData, error } = await authClient.token();
+
+      if (error || !tokenData?.token) {
+        throw new Error(error?.message || "Could not get JWT token");
+      }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined`,{
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${tokenData.token}`,
         },
         body: JSON.stringify(data)
       });
@@ -51,7 +57,6 @@ const data = {
         throw new Error(errorBody?.message || "Could not join the event. Please try again.");
       }
       const joinedData = await res.json();
-      console.log(joinedData);
       setJoinStatus("joined");
       if (joinedData.alreadyJoined) {
         toast("You have already joined this event");
@@ -66,14 +71,14 @@ const data = {
 
 
   return (
-    <section className="container mx-auto min-h-[65vh] w-[min(1200px,calc(100%-64px))] pb-[85px] pt-[55px] text-[#17251d] max-[600px]:w-[calc(100%-36px)] max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
-        <Link href="/events" className="mb-[27px] inline-flex items-center gap-[7px] text-xs leading-[1.6] text-[#59675e]">
+    <section className="container mx-auto min-h-[65vh] w-[min(1200px,calc(100%-64px))] pb-[85px] pt-[55px] text-[#17251d] dark:text-foreground max-[600px]:w-[calc(100%-36px)] max-[600px]:pb-[60px] max-[600px]:pt-[35px]">
+        <Link href="/events" className="mb-[27px] inline-flex items-center gap-[7px] text-xs leading-[1.6] text-[#59675e] dark:text-muted-foreground">
           <ArrowLeft size={15} aria-hidden="true" />
           Back to events
         </Link>
       <div className="grid grid-cols-[1.7fr_1fr] items-start gap-9 max-[860px]:grid-cols-[1.4fr_1fr] max-[860px]:gap-6 max-[600px]:grid-cols-1">
       <article className="min-w-0">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-[15px] bg-[#e8eddf]">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[15px] bg-[#e8eddf] dark:bg-(--home-sage)">
           <Image
             src={event.thumbnail || event.image || "/images/community-volunteer.jpg"}
             alt={event.title}
@@ -83,7 +88,7 @@ const data = {
             className="h-full w-full object-cover"
           />
         </div>
-        <span className="mt-[25px] inline-block rounded-[5px] bg-[#e8eddf] px-[10px] py-1 text-[11px] font-semibold text-[#166534]">
+        <span className="mt-[25px] inline-block rounded-[5px] bg-[#e8eddf] dark:bg-(--home-sage) px-[10px] py-1 text-[11px] font-semibold text-[#166534] dark:text-(--home-green)">
           {event.eventType}
         </span>
         <h1 className="my-[18px] text-[clamp(28px,3vw,40px)] font-semibold leading-[1.25] tracking-[-1px]">
@@ -92,29 +97,29 @@ const data = {
         <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
           A little about this initiative
         </h2>
-        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] dark:text-muted-foreground [overflow-wrap:anywhere]">
           {event.description}
         </p>
         <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
           Where we&apos;ll meet
         </h2>
-        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">{event.meetingPoint}</p>
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] dark:text-muted-foreground [overflow-wrap:anywhere]">{event.meetingPoint}</p>
         <h2 className="mb-[13px] mt-8 text-xl font-semibold leading-[1.6]">
           What to bring
         </h2>
-        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] [overflow-wrap:anywhere]">{event.whatToBring}</p>
+        <p className="whitespace-pre-wrap text-sm leading-[1.9] text-[#59675e] dark:text-muted-foreground [overflow-wrap:anywhere]">{event.whatToBring}</p>
       </article>
 
-      <aside className="sticky top-[113px] rounded-[14px] border border-[#dce4da] bg-card p-7 max-[860px]:p-[22px] max-[600px]:static">
+      <aside className="sticky top-[113px] rounded-[14px] border border-[#dce4da] dark:border-border bg-card p-7 max-[860px]:p-[22px] max-[600px]:static">
         <h2 className="mb-[21px] text-[19px] font-semibold">
           Make a little time.
         </h2>
         <div>
           {details.map(({ icon: Icon, label, value }) => (
             <div key={label} className="mb-[19px] flex items-start gap-[11px]">
-              <Icon size={19} className="mt-1 shrink-0 text-[#166534]" aria-hidden="true" />
+              <Icon size={19} className="mt-1 shrink-0 text-[#166534] dark:text-(--home-green)" aria-hidden="true" />
               <div className="min-w-0">
-                <small className="block text-[10px] text-[#59675e]">
+                <small className="block text-[10px] text-[#59675e] dark:text-muted-foreground">
                   {label}
                 </small>
                 <strong className="break-words text-[13px] font-medium">
@@ -136,7 +141,7 @@ const data = {
             ) : joinStatus === "joining" ? "Joining..." : "Join Event"}
         </button>
 
-        <p className="mt-3 text-center text-[10px] text-[#59675e]">
+        <p className="mt-3 text-center text-[10px] text-[#59675e] dark:text-muted-foreground">
           A little of your time. A whole lot of good.
         </p>
       </aside>

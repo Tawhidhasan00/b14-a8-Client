@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 
 
@@ -33,9 +34,17 @@ export default function JoinedEvents({ events}: { events: JoinedEventData[] }) {
 
 const handleRemove = async (registrationId: string) => {
   try {
+    const { data, error } = await authClient.token();
+
+    if (error || !data?.token) {
+      throw new Error(error?.message || "Could not get JWT token");
+    }
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/joined-events/${registrationId}`,
-      { method: "DELETE" }
+      {
+        method: "DELETE",
+        headers: { authorization: `Bearer ${data.token}` },
+      }
     );
 
     if (!res.ok) {
@@ -76,7 +85,7 @@ const handleRemove = async (registrationId: string) => {
             type="button"
             variant="outline"
             aria-label={`Remove ${event.title} from joined events`}
-            className="h-auto min-h-10 w-full gap-2 rounded-[9px] border-[#f0ceca] bg-[#fff4f2] px-[18px] py-2 text-[13px] font-semibold leading-[1.6] text-[#b42318] disabled:opacity-100"
+            className="h-auto min-h-10 w-full gap-2 rounded-[9px] border-[#f0ceca] dark:border-[#694039] bg-[#fff4f2] dark:bg-[#382320] dark:hover:bg-[#492b25] px-[18px] py-2 text-[13px] font-semibold leading-[1.6] text-[#b42318] dark:text-[#f5aaa1] dark:hover:text-[#f5aaa1] disabled:opacity-100"
           >
             <Trash2 size={15} aria-hidden="true" />
             Remove

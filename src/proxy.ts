@@ -10,7 +10,6 @@ export async function proxy(request: NextRequest) {
         headers: await headers(),
     })
     const user = session?.user;
-    console.log(user)
 
     if(!user) {
         return NextResponse.redirect(new URL('/login', request.url))

@@ -159,6 +159,8 @@ const handleGoogleAuth = async() => {
                 type="password"
                 required
                 minLength={register ? 8 : undefined}
+                pattern={register ? "(?=.*[a-z])(?=.*[A-Z]).{8,}" : undefined}
+                title={register ? "Use at least 8 characters, including uppercase and lowercase letters." : undefined}
                 autoComplete={register ? "new-password" : "current-password"}
                 placeholder={register ? "Choose a password" : "Your password"}
                 aria-describedby={register ? "auth-password-hint" : undefined}

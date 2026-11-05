@@ -17,5 +17,5 @@ export default function Notifications() {
     window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
   }, [userId]);
 
-  return <Toaster position="top-center" />;
+  return <Toaster position="top-center" toastOptions={{ className: "theme-toast" }} />;
 }

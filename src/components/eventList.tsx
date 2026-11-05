@@ -15,22 +15,22 @@ const EventsList = async() => {
     return (
   <div>
     <div className="mb-[27px] flex flex-wrap items-center gap-3">
-      <label className="flex min-w-[240px] flex-1 items-center gap-[10px] rounded-lg border border-[#dce4da] bg-card px-4 py-3 text-[#59675e]">
+      <label className="flex min-w-[240px] flex-1 items-center gap-[10px] rounded-lg border border-[#dce4da] dark:border-border bg-card px-4 py-3 text-[#59675e] dark:text-muted-foreground">
         <Search size={18} className="shrink-0" aria-hidden="true" />
         <span className="sr-only">Search events or neighborhoods</span>
         <input
           aria-label="Search events or neighborhoods"
           placeholder="Search an event or neighborhood..."
-          className="min-w-0 w-full border-0 bg-transparent text-[13px] text-[#17251d] outline-offset-3"
+          className="min-w-0 w-full border-0 bg-transparent text-[13px] text-[#17251d] dark:text-foreground outline-offset-3"
         />
       </label>
-      <label className="flex items-center gap-[10px] rounded-lg border border-[#dce4da] bg-card px-4 py-3 text-[#59675e] max-[600px]:flex-1">
+      <label className="flex items-center gap-[10px] rounded-lg border border-[#dce4da] dark:border-border bg-card px-4 py-3 text-[#59675e] dark:text-muted-foreground max-[600px]:flex-1">
         <SlidersHorizontal size={17} className="shrink-0" aria-hidden="true" />
         <span className="sr-only">Event category</span>
         <select
           aria-label="Event category"
           defaultValue=""
-          className="min-w-0 w-full border-0 bg-transparent text-[13px] text-[#17251d] outline-offset-3 [&_option]:bg-card"
+          className="min-w-0 w-full border-0 bg-transparent text-[13px] text-[#17251d] dark:text-foreground outline-offset-3 [&_option]:bg-card"
         >
           <option value="">All categories</option>
           <option>Cleanup</option>
@@ -38,8 +38,8 @@ const EventsList = async() => {
           <option>Food Distribution</option>
         </select>
       </label>
-      <label className="flex cursor-pointer items-center gap-[7px] p-3 text-xs leading-[1.6] text-[#17251d]">
-        <input type="checkbox" className="size-[15px] accent-[#166534]" />
+      <label className="flex cursor-pointer items-center gap-[7px] p-3 text-xs leading-[1.6] text-[#17251d] dark:text-foreground">
+        <input type="checkbox" className="size-[15px] accent-[#166534] dark:accent-primary" />
         I have one hour
       </label>
     </div>

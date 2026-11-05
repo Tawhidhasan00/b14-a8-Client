@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 import {
   DropdownMenu,
@@ -15,17 +16,18 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import Link from "next/link";
-import { ArrowUpRight, Menu, Moon } from "lucide-react";
+import { ArrowUpRight, Menu, Moon, Sun } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export default function Header() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
 
   const {data: session} = authClient.useSession();
   const user = session?.user;
-  console.log(user)
 
 const router = useRouter();
 
@@ -58,8 +60,9 @@ const handleLogout = async () => {
           <Link href="/#how-it-works">How it works</Link>
         </nav>
         <div className="header-actions">
-          <Button type="button" variant="outline" size="icon" className="theme-button" aria-label="Dark theme (coming soon)" disabled>
-            <Moon aria-hidden="true" />
+          <Button type="button" variant="outline" size="icon" className="theme-button" aria-label="Toggle color theme" onClick={toggleTheme}>
+            <Moon className="dark:hidden" aria-hidden="true" />
+            <Sun className="hidden dark:block" aria-hidden="true" />
           </Button>
 
           {user ? (
@@ -142,6 +145,11 @@ const handleLogout = async () => {
               <Link href="/events">Upcoming Events</Link>
               <Link href="/manage-events">My Events</Link>
               <Link href="/#how-it-works">How it works</Link>
+              <Button type="button" variant="ghost" className="justify-start min-[431px]:hidden" onClick={toggleTheme}>
+                <Moon className="dark:hidden" aria-hidden="true" />
+                <Sun className="hidden dark:block" aria-hidden="true" />
+                Change theme
+              </Button>
             </nav>
           </details>
         </div>

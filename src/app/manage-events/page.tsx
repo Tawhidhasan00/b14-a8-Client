@@ -11,9 +11,13 @@ const ManageEventsPage = async() => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/my-events/user/${encodeURIComponent(session.user.email)}`,
-    { cache: "no-store" }
+    {
+      cache: "no-store",
+      headers: { authorization: `Bearer ${jwtToken.token}` },
+    }
   );
   if (!res.ok) throw new Error("Could not load your events");
   const events: MyEventData[] = await res.json();

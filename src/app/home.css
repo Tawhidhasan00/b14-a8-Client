@@ -101,6 +101,13 @@
 .closing-note a { display: inline-flex; align-items: center; gap: 7px; color: var(--home-green); font-weight: 600; }
 .closing-note svg { width: 16px; height: 16px; }
 
+.dark .home-page :is(.photo-badge, .hero-impact, .step-card, .events-placeholder, .retry-button, .newsletter-input-wrap, .newsletter-input-wrap input) {
+  background: var(--card);
+  color: var(--foreground);
+}
+.dark .hero-impact .icon-disc { color: var(--home-green); }
+.dark .skip-link { color: var(--primary-foreground); }
+
 @media (max-width: 1000px) {
 
   .hero-actions { align-items: flex-start; flex-direction: column; }

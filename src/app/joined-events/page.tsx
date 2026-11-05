@@ -1,14 +1,21 @@
 import JoinedEvents from "@/components/joinedEvent";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function JoinedEventsPage() {
 
   const session = await auth.api.getSession({
     headers: await headers()
   });
-  const user = session?.user;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined-events/${user?.email}`, { cache: "no-store" })
+  if (!session) redirect("/login");
+
+  const user = session.user;
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/joined-events/${encodeURIComponent(user.email)}`, {
+    cache: "no-store",
+    headers: { authorization: `Bearer ${jwtToken.token}` },
+  })
   if (!res.ok) throw new Error("Could not load joined events");
   const joinedData = await res.json();
   
